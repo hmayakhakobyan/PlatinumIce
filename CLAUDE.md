@@ -26,6 +26,42 @@ Elementor Pro is **not required** to build custom widgets — they can be develo
 - Prefer Elementor-native functionality (native widgets, native controls, native theme features) over custom code when a native solution meets the need.
 - Avoid unnecessary dependency on Alukas proprietary widgets/features where a maintainable Elementor-native or plain WordPress solution exists — keeps the site portable if the parent theme ever changes.
 
+## Automation & Maintainability
+
+1. Claude Code should perform as much routine WordPress, Elementor, WooCommerce, and website development work on the user's behalf as technically and safely possible.
+2. The normal workflow is: User requests change → Claude implements → Claude verifies → User visually reviews.
+3. Prefer WordPress APIs and WP-CLI for programmatic WordPress operations instead of raw SQL whenever practical.
+4. Prefer native Elementor containers and widgets for important page structures when practical.
+5. Avoid unnecessary dependency on Alukas proprietary Elementor widgets.
+6. Never modify the Alukas parent theme.
+7. Theme-specific customizations belong in alukas-child.
+8. Business functionality that should survive a future theme change should eventually live in a dedicated Platinum Ice custom plugin rather than being buried in the child theme.
+9. Keep WooCommerce product, order, customer, coupon, taxonomy, and commerce data in standard WooCommerce structures wherever practical.
+10. Build reusable components and patterns rather than one-off hard-coded layouts.
+11. Important website elements should remain programmatically accessible to Claude for future maintenance whenever technically practical.
+12. Avoid plugins that lock important content or business functionality into proprietary formats unless there is a documented reason for using them.
+13. Before significant automated WordPress/database changes, create an appropriate backup/checkpoint.
+14. Database-only changes do not require Git commits.
+15. All source-code changes must remain Git tracked.
+16. Never store credentials, API keys, payment secrets, passwords, licenses, purchase codes, or other secrets in Git.
+17. Only require manual user interaction when genuinely necessary for:
+   - authentication
+   - license activation
+   - payment or secret credentials
+   - unavoidable third-party UI actions
+   - subjective visual approval
+18. Before changing Elementor _elementor_data programmatically:
+   - validate the JSON first
+   - use controls supported by the installed Elementor version
+   - create a database checkpoint for significant changes
+   - render/validate the resulting page after writing
+   - verify that unrelated pages and homepage assignments remain unchanged
+19. WP-CLI note for this Local WordPress environment:
+   When writing Elementor JSON through wp post meta update using STDIN,
+   do NOT pass "-" as the value argument. Omitting the value argument is required for STDIN.
+   Passing "-" stores the literal string "-".
+20. Platinum Ice pages should remain easy for both Claude Code and a human administrator to update after launch.
+
 ## Project: Platinum Ice
 
 **Brand:** Platinum Ice — "Clear Luxury" — premium clear ice company (platinumice.co). Serves luxury restaurants, cocktail bars, hotels, lounges, weddings, private/corporate events, brand activations, and direct-to-consumer customers. Products: signature clear cubes, spheres, Collins spears, rocks, blocks, custom logo/monogram/branded ice, custom shapes, botanical/specialty ice.
