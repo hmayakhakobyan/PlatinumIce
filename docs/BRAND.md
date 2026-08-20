@@ -57,14 +57,23 @@ Principles:
 
 ## 7. Color Direction
 
-Direction only — no exact values are approved.
-
 - **Black** — premium, grounding tone
 - **Platinum/silver** — metallic, refined accent
 - **Warm white** — soft, elevated neutral (not stark/clinical white)
 - **Subtle ice tones** — cool, translucent accents evoking clear ice
 
-**Exact HEX / RGB values: TBD.** Do not invent or select specific color codes until approved.
+### Approved Starting Palette
+
+| Name | Hex |
+|---|---|
+| Obsidian Black | `#0A0A0A` |
+| Charcoal | `#171717` |
+| Platinum Silver | `#BFC3C7` |
+| Ice White | `#F4F7F8` |
+| Warm White | `#F5F1EA` |
+| Soft Gray | `#8E9499` |
+
+**Note:** These are the approved starting website colors. They may be refined later after visual testing.
 
 ## 8. Typography Direction
 
@@ -113,7 +122,6 @@ Also avoid, per the approved design direction: excessive gradients, glassmorphis
 
 ## 14. Items Still Requiring Approval
 
-- Exact color values (HEX/RGB)
 - Exact typography (font families)
 - Final production logo files (all variations listed in Section 5)
 - Photography style details (shot lists, styling, production standards)
@@ -129,9 +137,9 @@ Also avoid, per the approved design direction: excessive gradients, glassmorphis
 - Domain
 - Logo direction
 - Luxury positioning
+- Starting color palette (subject to refinement after visual testing)
 
 **Pending approval:**
-- Exact color values
 - Exact typography
 - Final production logo files
 - Photography style details
