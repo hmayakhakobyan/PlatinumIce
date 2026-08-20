@@ -62,6 +62,25 @@ Elementor Pro is **not required** to build custom widgets — they can be develo
    Passing "-" stores the literal string "-".
 20. Platinum Ice pages should remain easy for both Claude Code and a human administrator to update after launch.
 
+### Surgical Elementor content updates
+
+When asked to change a single piece of homepage content (a heading, a CTA label, an image, one section's copy), do NOT regenerate or overwrite the entire `_elementor_data` document. Instead:
+
+1. Read the current value: `wp post meta get <page_id> _elementor_data` (WP-CLI), redirected to a scratch file.
+2. `json_decode` it, locate the target element by its Elementor element `id` or (preferably, since it's stable and descriptive) its `settings.css_classes` value — see `docs/HOMEPAGE-CONTENT-MAP.md` for the current page 841 element ID/class inventory.
+3. Mutate only the specific setting key needed (e.g. `title`, `editor`, `text`, `background_image`) on that one element — leave every other element/setting untouched.
+4. Re-`json_encode` the full array (still the whole document, but only one field actually changed) and validate it decodes cleanly before writing.
+5. Write back via `wp post meta update <page_id> _elementor_data` reading from STDIN (value argument omitted — see the STDIN note below).
+6. `wp elementor flush_css`, then render-check via `Elementor\Plugin::$instance->frontend->get_builder_content_for_display()` to confirm the change applied and nothing else broke.
+7. Verify unrelated pages (especially page 52) and `page_on_front` are unchanged.
+
+This keeps changes reviewable/diffable in intent even though the underlying storage is one large JSON blob, and avoids the risk of accidentally reintroducing stale settings from a regenerated document.
+
+### WP-CLI meta-storage gotchas for this project
+
+- **`_elementor_data`** is stored as a **raw JSON string** (Elementor encodes/decodes it itself) — write it with `wp post meta update <id> _elementor_data` piping JSON text via STDIN (value argument omitted). Never pass literal `-` as the value argument — WP-CLI only reads STDIN when the value argument is *omitted entirely*; passing `-` stores the literal string `"-"`.
+- **`_elementor_page_settings`** (used for the Elementor kit's global colors/typography, and for any document's page-level settings) is, unlike `_elementor_data`, a **normal WordPress array meta value** — it must be auto-serialized by WordPress, not stored as a JSON string. Write it with `wp post meta update <id> _elementor_page_settings --format=json`, piping JSON via STDIN, so WP-CLI decodes the JSON into a PHP array before calling `update_post_meta()`. Writing it as a plain JSON string (like `_elementor_data`) silently fails — Elementor's `get_settings_for_display()` reads back a string instead of an array and the settings are ignored with no error.
+
 ## Project: Platinum Ice
 
 **Brand:** Platinum Ice — "Clear Luxury" — premium clear ice company (platinumice.co). Serves luxury restaurants, cocktail bars, hotels, lounges, weddings, private/corporate events, brand activations, and direct-to-consumer customers. Products: signature clear cubes, spheres, Collins spears, rocks, blocks, custom logo/monogram/branded ice, custom shapes, botanical/specialty ice.
