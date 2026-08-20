@@ -4,48 +4,42 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-A WordPress **child theme** for [Bricks Builder](https://bricksbuilder.io/) (parent theme lives at `../bricks`, a sibling directory, not inside this repo). There is no build system, package manager, or test suite — this is plain PHP/CSS loaded directly by WordPress. There are no build/lint/test commands to run; changes are verified by loading the site in a browser (via Local by Flywheel, given the `Local Sites` path) and checking the Bricks builder/frontend.
+A WordPress **child theme** for the [Alukas](https://alukas.presslayouts.com/) theme (parent theme lives at `../alukas`, a sibling directory, not inside this repo), built to be used with **Elementor**. There is no build system, package manager, or test suite — this is plain PHP/CSS loaded directly by WordPress. There are no build/lint/test commands to run; changes are verified by loading the site in a browser (via Local by Flywheel, given the `Local Sites` path) and checking the WordPress frontend / Elementor editor.
 
-Since there's no parent-theme source in this repo, when you need to understand inherited behavior (template files, WooCommerce overrides, global functions), read the corresponding file in `../bricks` rather than guessing.
+Since there's no parent-theme source in this repo, when you need to understand inherited behavior (template files, WooCommerce overrides, global functions), read the corresponding file in `../alukas` rather than guessing.
 
 ## Architecture
 
-- **`style.css`** — theme stylesheet header (declares `Template: bricks`, which is what makes this a child theme) plus any custom CSS. Enqueued on the frontend only, not in the Bricks builder canvas, via `functions.php`.
-- **`functions.php`** — the only PHP entry point. Three concerns live here:
-  1. Enqueues `style.css`, guarded by `bricks_is_builder_main()` so child-theme CSS doesn't leak into the builder UI itself.
-  2. Registers custom Bricks elements by listing their file paths in `$element_files` and calling `\Bricks\Elements::register_element()` on `init` (priority 11, i.e. after Bricks' own elements register).
-  3. Adds the `custom` element category label to the builder via the `bricks/builder/i18n` filter.
-- **`elements/`** — one file per custom Bricks element, each defining a class extending `\Bricks\Element`. `elements/title.php` (`Element_Custom_Title`) is the reference implementation.
+- **`style.css`** — theme stylesheet header (declares `Template: alukas`, which is what makes this a child theme; `Text Domain: pls-theme-child`) plus any custom CSS.
+- **`functions.php`** — enqueues `style.css` on the frontend via `wp_enqueue_scripts` (priority 101, after the parent theme's own enqueue).
 
-### Adding a new custom Bricks element
+This is currently a minimal foundation. There is no custom PHP logic, no custom Elementor widgets, and no plugin dependencies yet — those will be added incrementally as the project needs them, with approval.
 
-Follow the pattern in `elements/title.php`:
-1. Create `elements/{name}.php` with a class extending `\Bricks\Element`, guarded by `if ( ! defined( 'ABSPATH' ) ) exit;`.
-2. Set `$category`, `$name` (unique slug), `$icon` (FontAwesome 5 class), `$css_selector`.
-3. Implement `get_label()`, `set_control_groups()` / `set_controls()` (defines the builder's settings panel), and `render()` (frontend + default builder output, reading from `$this->settings`).
-4. Optionally implement a static `render_builder()` using an `x-template` script + Vue component syntax (`contenteditable`, `:settings`) for a faster, JS-only builder preview instead of relying on PHP re-renders over AJAX.
-5. Register the new file's path in the `$element_files` array in `functions.php`.
+### Adding custom Elementor widgets (future)
 
-Reference: https://academy.bricksbuilder.io/article/create-your-own-elements
+Elementor Pro is **not required** to build custom widgets — they can be developed against Elementor Core (free). Elementor Pro is only needed later for Pro-specific functionality: Theme Builder, Pro WooCommerce features, dynamic content/tags, forms, and popups. No custom widget pattern has been established in this repo yet; when the first one is built, document the pattern here.
 
 ## Conventions
 
-- Text domain is `'bricks'` (not `'bricks-child'`) — match this in all `esc_html__()` / `__()` calls, matching the parent theme's domain.
-- Escape all output (`esc_html__`, etc.) per existing element code.
-- Element control/setting keys and CSS class names follow BEM-ish, lowerCamelCase JS-facing keys (e.g. `titleTypography`) mapped to CSS selectors like `.title`.
+- Text domain is `'pls-theme-child'` (matching the existing Alukas Child theme's `style.css` declaration) — use this in all `esc_html__()` / `__()` calls for custom child-theme code.
+- Escape all output (`esc_html__`, etc.).
+- Prefer Elementor-native functionality (native widgets, native controls, native theme features) over custom code when a native solution meets the need.
+- Avoid unnecessary dependency on Alukas proprietary widgets/features where a maintainable Elementor-native or plain WordPress solution exists — keeps the site portable if the parent theme ever changes.
 
 ## Project: Platinum Ice
 
 **Brand:** Platinum Ice — "Clear Luxury" — premium clear ice company (platinumice.co). Serves luxury restaurants, cocktail bars, hotels, lounges, weddings, private/corporate events, brand activations, and direct-to-consumer customers. Products: signature clear cubes, spheres, Collins spears, rocks, blocks, custom logo/monogram/branded ice, custom shapes, botanical/specialty ice.
 
-**Production architecture:** Self-hosted WordPress + Bricks Builder + this Bricks child theme. WooCommerce will be added later for ecommerce. Version control via Git/GitHub. Production will eventually run on the company's own hosting server.
+**Production architecture:** Self-hosted WordPress + Alukas parent theme + Alukas Child theme (this repo) + Elementor + WooCommerce (added later for ecommerce). Version control via Git/GitHub. Development via Claude Code. Production will eventually run on the company's own hosting server.
+
+**Migration note:** This project was previously built on Bricks Builder (`bricks-child` theme, same repository history). The stack was switched to Alukas + Elementor. Bricks-specific code (custom Bricks elements, Bricks-only functions) was intentionally left behind and must not be ported over — Elementor widgets, if/when needed, should be built fresh against the Elementor architecture.
 
 ### Development rules
 
 1. Never modify WordPress core files.
-2. Never modify the Bricks parent theme.
-3. All custom PHP, CSS, JavaScript, components, and development changes must remain in this Bricks child theme unless explicitly approved otherwise.
-4. Do not install plugins, libraries, frameworks, or dependencies without explicit approval.
+2. Never modify the Alukas parent theme.
+3. All custom PHP, CSS, JavaScript, components, and development changes must remain in this Alukas child theme unless explicitly approved otherwise.
+4. Do not install plugins, libraries, frameworks, or dependencies (including Elementor and WooCommerce themselves) without explicit approval.
 5. Do not invent business information — pricing, product specifications, delivery areas, testimonials, customer names, statistics, certifications, addresses, phone numbers, or policies. Ask for clarification whenever required business information is missing.
 6. Do not make major architecture changes without approval.
 7. Before making significant changes, explain what files will be changed and why.
