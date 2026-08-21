@@ -1,0 +1,23 @@
+# Copy this file to asset-sync.local.psd1 (same folder) and fill in your
+# own machine's values. asset-sync.local.psd1 is gitignored - it is never
+# committed, since it contains machine-specific absolute paths and a local
+# site URL. This .example file IS tracked, as a template only (no real
+# machine paths below).
+@{
+    # Absolute path to your WordPress install's "app/public" folder.
+    SitePath  = 'C:\Users\YourName\Local Sites\your-site\app\public'
+
+    # The site's local URL, as WP-CLI's --url expects it.
+    SiteUrl   = 'http://your-site.local'
+
+    # Optional - only set these if auto-discovery can't find them on your
+    # machine (e.g. you're not using Local by Flywheel, or it's installed
+    # somewhere non-standard). Leave commented out to use auto-discovery.
+    # PhpPath   = 'C:\path\to\php.exe'
+    # WpCliPath = 'C:\path\to\wp-cli.phar'
+    # MysqlPort = 10005
+
+    # Optional - override where the asset inbox lives. Defaults to
+    # "<your Pictures folder>\PlatinumIce" if omitted.
+    # AssetRoot = 'C:\Users\YourName\Pictures\PlatinumIce'
+}

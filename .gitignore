@@ -1,0 +1,10 @@
+# Platinum Ice asset sync manifest - machine-local (attachment IDs, URLs,
+# and file hashes are specific to this WordPress install and should never
+# be committed). The sync script itself (dev-tools/sync-assets.ps1) is
+# tracked; this generated data file is not.
+dev-tools/asset-sync.local.json
+
+# Platinum Ice asset sync local config - machine-specific absolute paths
+# and site URL (see dev-tools/asset-sync.local.psd1.example, which IS
+# tracked, for the template).
+dev-tools/asset-sync.local.psd1

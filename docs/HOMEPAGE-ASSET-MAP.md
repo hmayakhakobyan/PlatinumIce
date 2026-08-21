@@ -4,6 +4,8 @@ Specification of every image/video asset the approved homepage structure needs. 
 
 Once real files exist, hand them to Claude and the "Media Library Automation" workflow (see chat report / future sessions) takes them from local file → attached, responsive, and assigned to the correct element.
 
+**Architecture note (SEO Media Architecture sprint):** Signature Ice, Custom Ice, Hospitality, Events, and The Craft are now real native Elementor **Image widgets** (`<img>` elements) rather than CSS/container background images — meaningful content, not decorative filler, so each will need real, specific alt text once the actual photo is known (never keyword-stuffed, never invented from the filename). **Hero remains the one exception** — it stays a container background image/video, since it's an intentionally decorative cinematic layer behind the hero copy, not a semantic content image. Shop's product slots have not yet been converted to real `<img>` elements (still a container-background placeholder) — that conversion is a future step.
+
 ## 1. Hero
 
 - **Section / element class:** Hero — `platinum-hero`
