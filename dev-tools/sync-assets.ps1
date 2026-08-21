@@ -86,7 +86,15 @@ param(
     [string]$WpCliPath,
     [int]$MysqlPort,
     [switch]$DryRun,
-    [string]$Category
+    [string]$Category,
+    # Manual naming override for specific files, keyed by original filename
+    # (e.g. the exact name a downloaded/AI-generated file arrived with),
+    # value = the desired SEO filename (with extension). Use this when a
+    # human or Claude has actually looked at the image and knows a better,
+    # accurate name than the mechanical original-name-normalized/hash-fallback
+    # logic could ever produce on its own - it never invents a subject
+    # itself, so this is the supported way to supply one deliberately.
+    [hashtable]$FilenameOverrides = @{}
 )
 
 $ErrorActionPreference = "Stop"
@@ -202,7 +210,24 @@ function Get-CleanSubjectTokens {
 }
 
 function Get-SeoFilenameInfo {
-    param([string]$BaseName, [string]$CategoryName, [string]$Sha256, [string]$Extension)
+    param([string]$BaseName, [string]$CategoryName, [string]$Sha256, [string]$Extension, [string]$OriginalFileName, [hashtable]$Overrides = @{})
+
+    if ($OriginalFileName -and $Overrides.ContainsKey($OriginalFileName)) {
+        $overrideName = $Overrides[$OriginalFileName]
+        $overrideBase = [System.IO.Path]::GetFileNameWithoutExtension($overrideName)
+        $overrideExt = [System.IO.Path]::GetExtension($overrideName)
+        if (-not $overrideExt) { $overrideExt = $Extension }
+        $titleWords = $overrideBase -split '-'
+        $mediaTitle = ($titleWords | ForEach-Object {
+            if ($_.Length -gt 0) { $_.Substring(0,1).ToUpperInvariant() + $_.Substring(1) } else { $_ }
+        }) -join ' '
+        return [PSCustomObject]@{
+            SeoFilename  = "$overrideBase$overrideExt"
+            NamingSource = "manual-override"
+            MediaTitle   = $mediaTitle
+            NeedsReview  = $false
+        }
+    }
 
     $categoryToken = $CategoryName.ToLowerInvariant()
     $tokens = Get-CleanSubjectTokens -BaseName $BaseName
@@ -413,7 +438,7 @@ foreach ($file in $files) {
     }
     $seenThisRun[$hash] = $relative
 
-    $seoInfo = Get-SeoFilenameInfo -BaseName $file.BaseName -CategoryName $categoryName -Sha256 $hash -Extension $ext
+    $seoInfo = Get-SeoFilenameInfo -BaseName $file.BaseName -CategoryName $categoryName -Sha256 $hash -Extension $ext -OriginalFileName $file.Name -Overrides $FilenameOverrides
     $altGuidance = if ($AltTextGuidanceMap.ContainsKey($categoryName)) { $AltTextGuidanceMap[$categoryName] } else { "decorative-background" }
 
     if ($DryRun) {
