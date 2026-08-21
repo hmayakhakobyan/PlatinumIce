@@ -8,3 +8,11 @@ dev-tools/asset-sync.local.json
 # and site URL (see dev-tools/asset-sync.local.psd1.example, which IS
 # tracked, for the template).
 dev-tools/asset-sync.local.psd1
+
+# Third-party CLI-agent skill packs installed via `npx skills add` (e.g.
+# Higgsfield). These are machine-tool-managed, not theme source - the
+# installer itself flags some of them High/Critical Risk in its own
+# automated scan, so they're deliberately never committed to this repo.
+.agents/
+.claude/
+skills-lock.json
