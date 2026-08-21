@@ -8,3 +8,49 @@ Author URI: https://www.presslayouts.com/
 Template: alukas
 Text Domain: pls-theme-child
 */
+
+/*
+ * TEMPORARY Platinum Ice text wordmark styling.
+ * Supports the header logo override at
+ * template-parts/header/elements/logo.php — remove both together once the
+ * final Platinum Ice SVG logo files are uploaded via Theme Options.
+ * Uses the theme's inherited font (no font-family set here on purpose).
+ */
+.pls-header-logo .platinum-text-logo {
+	font-size: 20px;
+	font-weight: 500;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	line-height: 1;
+	white-space: nowrap;
+}
+.pls-header-logo .pls-logo.platinum-text-logo {
+	color: #171717;
+}
+.pls-header-logo .pls-logo-light.platinum-text-logo,
+.pls-header-logo .pls-mobile-logo.platinum-text-logo {
+	color: #F4F7F8;
+}
+
+/*
+ * The mobile off-canvas menu panel (pls_mobile_menu() in the parent theme's
+ * inc/theme-functions.php) builds its own logo <img> markup independently of
+ * template-parts/header/elements/logo.php, so the override above doesn't
+ * reach it. Rather than forking that large parent function, hide its <img>
+ * here and show the same temporary text wordmark via ::after on the existing
+ * .pls-header-logo wrapper div (a non-replaced element, so ::after works).
+ * NOTE: "Platinum Ice" is a literal string here (CSS can't read the site
+ * title) — keep it in sync with Settings > General > Site Title, and delete
+ * this whole block once the real logo files are uploaded.
+ */
+.pls-mobile-menu-header .pls-header-logo img.pls-mobile-logo {
+	display: none;
+}
+.pls-mobile-menu-header .pls-header-logo::after {
+	content: "Platinum Ice";
+	font-size: 18px;
+	font-weight: 500;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: #F4F7F8;
+}

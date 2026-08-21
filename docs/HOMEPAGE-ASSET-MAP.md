@@ -6,17 +6,36 @@ Once real files exist, hand them to Claude and the "Media Library Automation" wo
 
 ## 1. Hero
 
-- **Section / element class:** Hero — `platinum-hero` (currently solid Obsidian #0A0A0A background)
-- **Intended visual:** cinematic premium clear ice and/or cocktail imagery, or video loop
+- **Section / element class:** Hero — `platinum-hero`
+- **Intended visual:** cinematic premium clear ice and/or cocktail imagery, still or video loop
+- **Architecture status (as of the Hero Media Preparation sprint):** the `platinum-hero` container is pre-configured and verified ready to receive either asset type via Elementor's native background controls — `background-size: cover`, `background-position: center right` (desktop/tablet) / `center center` (mobile), `background-attachment: scroll` (never `fixed`), and a native Elementor Background Overlay layer (`::before`, `rgba(10, 10, 10, 0.45)`) already generating correctly in the compiled CSS — currently invisible since it's the same RGB as the `#0A0A0A` fallback it sits over. Assigning a real `background_image` or `background_video_link` value is the only remaining step; no structural changes will be needed.
+- **Focal positioning guidance:** hero copy is anchored bottom-left with generous padding — the photo/video's main subject should sit center-right or right-weighted so it doesn't compete with or sit under the text. The prepared `center right` default is a starting point, not final — revisit once the actual composition is known.
+- **Overlay guidance:** the prepared overlay is a flat translucent dark layer, intentionally not a gradient. Once a real image is in place, tune only its opacity (e.g. 0.25–0.5) if text contrast needs adjusting — avoid adding a gradient unless a flat overlay proves insufficient.
+
+### Still image
+
 - **Orientation:** landscape / full-bleed
-- **Recommended aspect ratio:** ~16:9 to 21:9 (wide cinematic crop tolerates the tall 90vh desktop hero without excessive cropping)
-- **Recommended source resolution:** at least 2560×1440 (image) if a still; if video, at least 1920×1080 source, ideally 4K master for future-proofing
-- **Desktop use:** full-bleed background fill, content anchored bottom-left over it
-- **Mobile crop consideration:** center-weighted crop; the subject should read at a roughly 4:5–3:4 mobile viewport crop without losing focal subject (ice/glass)
-- **Image or video:** either; video should be silent/looping, short (10–20s), heavily compressed
-- **File format:** `.jpg` (still) or `.mp4`/`.webm` (video); avoid `.png` for photography (unnecessary file size)
-- **Performance notes:** hero asset is the largest LCP risk on the page — must be served responsively (see workflow) and video should have a poster-frame still fallback for slow connections/reduced-motion users
-- **Proposed filename:** `hero-clear-ice.jpg` or `hero-clear-ice.mp4`
+- **Recommended aspect ratio:** ~16:9 to 21:9 (wide cinematic crop tolerates the tall ~90vh desktop hero without excessive cropping)
+- **Recommended source resolution:** at least 2560×1440; 3840×2160 (4K) preferred so a single master can be downsized for all breakpoints rather than re-shot later
+- **Preferred production formats:**
+  - WebP or AVIF for optimized photographic delivery.
+  - WordPress supports AVIF on WordPress 6.5+ when the server's image-processing library supports AVIF.
+  - Verify AVIF support under the actual production server's Site Health / Media Handling before choosing AVIF as the final delivery format.
+  - JPEG may be retained as a simple compatibility/source fallback if we intentionally choose to provide one, but WordPress does not automatically create a JPEG fallback from a WebP upload — a JPEG version would need to be sourced/generated separately if one is wanted.
+  - Avoid PNG for photographic hero assets unless transparency is genuinely required.
+- **Maximum practical target file size:** ideally under **300KB** for the delivered (resized/compressed) hero image; the source master can be much larger, but what's actually served to the browser should stay well under that to protect LCP.
+- **Focal-area guidance:** see above — subject weighted center-right, leaving the left/lower-left third relatively open for the hero text.
+- **Mobile crop guidance:** center-weighted crop tolerant to a roughly 4:5–3:4 portrait viewport crop without losing the focal subject; avoid a composition where the subject only reads correctly in the wide desktop crop.
+- **Proposed filename:** `hero-clear-ice.webp` (+ `hero-clear-ice.jpg` fallback if generated separately)
+
+### Video
+
+- **Recommended aspect ratio:** 16:9 source, since it will be cropped to fill the hero container the same way the still image would (`background-size: cover`)
+- **Resolution:** 1920×1080 minimum; a 4K (3840×2160) master is preferable for future re-encoding, but the file actually served to the browser should be downscaled to 1080p — 4K video in a background loop is unnecessary weight for no visible benefit at typical hero display sizes
+- **Format strategy:** **MP4 (H.264)** as the primary/only source is sufficient for Elementor's native background-video field, which accepts one video URL. A dual-format `MP4 + WebM` `<source>` fallback chain would shave some file size on browsers that support WebM/VP9, but requires a custom implementation beyond Elementor's native single-URL video background (see the architecture recommendation below) — treat as a nice-to-have, not a requirement, unless profiling later shows the single MP4 is a real performance problem.
+- **Recommended duration:** short and seamlessly loopable — 6–12 seconds is typically enough for a hero loop; avoid anything that reads as a "video with a beginning/end" rather than ambient motion.
+- **Target file size:** aim for under **3–5MB** for the delivered/compressed loop (heavily compressed, no audio track at all — don't ship silent-but-present audio streams, strip the audio entirely to save weight).
+- **Poster-frame requirement:** a still image (from the "Still image" spec above, or a representative frame from the video) is required as the fallback/poster — shown while the video loads, and shown instead of the video entirely on mobile (Elementor's native "Play on Mobile" toggle defaults off, so a poster/fallback image is not optional, it's the default mobile experience).
 
 ## 2. Signature Ice
 
