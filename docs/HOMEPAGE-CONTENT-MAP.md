@@ -2,6 +2,8 @@
 
 Machine-generated inventory of every editable content location in the approved homepage structure. Generated directly from the live `_elementor_data` on page 841 (WordPress page ID 841) — element IDs and CSS classes below are exact and can be used for surgical future updates (see `CLAUDE.md` → "Surgical Elementor content updates").
 
+**Status update (Overnight Production Build sprint):** all TBD placeholders in the table below have since been filled in with real copy, and all image widgets (Signature/Custom/Hospitality/Events/Craft) plus the Hero background now have real photography assigned. The 3 Shop slots were converted from text-label placeholders into real Elementor Image widgets (`platinum-shop-cube-image` / `platinum-shop-sphere-image` / `platinum-shop-spear-image`, each `_css_classes` on the widget) pointing at attachments 868/869/870. The "Current Placeholder Text" column below is now historical — it documents what the scaffold looked like before this sprint, not the current live content.
+
 Do not edit page 52 (Home v9) using this map — it documents page 841 only.
 
 **Verified (Final Elementor Class Audit sprint):** every class/element ID below was confirmed to actually render in the live HTML output (61/61, zero missing, zero duplicate IDs) after correcting the storage key for all 26 widget-level classes from `css_classes` to `_css_classes` — see the note below and `CLAUDE.md` → "Surgical Elementor content updates". No class name, element ID, copy, layout, sizing, color, or responsive setting changed — only the storage key.
